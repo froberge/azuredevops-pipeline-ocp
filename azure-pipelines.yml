@@ -40,7 +40,7 @@ steps:
   displayName: 'Build container image'
   inputs: 
     command: build
-    containerRegistry: quayregistry
+    containerRegistry: quay
     repository: $(imageName)
     buildContext: $(Build.ArtifactStagingDirectory)/Output/app
     Dockerfile: docker/Dockerfile
@@ -50,7 +50,7 @@ steps:
   displayName: Push image to quay.io
   inputs:
     command: push
-    containerRegistry: quayregistry
+    containerRegistry: quay
     repository: $(imageName)
     tags: latest
  
