@@ -9,9 +9,10 @@ trigger:
 pool:
   vmImage: ubuntu-18.04
 
+# Before running the pipeline these 2 variables needs to be set.
 variables:
-        imageName: 'froberge/dotnetcore-app'
-        projectName: 'demo'
+        imageName: '[DEFINE_IMAGE_NAME]'
+        projectName: '[OCP_PROJECT]'
 
 steps:
 - task: UseDotNet@2
