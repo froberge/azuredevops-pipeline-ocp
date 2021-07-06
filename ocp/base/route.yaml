@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: dotnetcore-app
+    app.kubernetes.io/part-of: dotnetcore-app-app
+  name: dotnetcore-app
+spec:
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: dotnetcore-app
+    weight: 100

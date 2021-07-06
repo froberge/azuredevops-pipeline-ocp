@@ -1,0 +1,72 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-18.04
+
+variables:
+        imageName: 'froberge/dotnetcore-app'
+        projectName: 'demo'
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    version: '5.0.x'
+    includePreviewVersions: true
+    performMultiLevelLookup: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build the application'
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish the application'
+  inputs:
+    command: 'publish'
+    projects: '**/*.csproj'
+    publishWebProjects: true
+    arguments: '-c release -o $(Build.ArtifactStagingDirectory)/Output --no-restore'
+    zipAfterPublish: false
+    modifyOutputPath: true
+    
+- task: Docker@2
+  displayName: 'Build container image'
+  inputs: 
+    command: build
+    containerRegistry: quayregistry
+    repository: $(imageName)
+    buildContext: $(Build.ArtifactStagingDirectory)/Output/app
+    Dockerfile: docker/Dockerfile
+    tags: latest
+
+- task: Docker@2
+  displayName: Push image to quay.io
+  inputs:
+    command: push
+    containerRegistry: quayregistry
+    repository: $(imageName)
+    tags: latest
+ 
+- task: oc-cmd@2
+  displayName: Deploy to OCP
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'openshift'
+    cmd: apply -k ${SYSTEM_DEFAULTWORKINGDIRECTORY}/ocp/overlays/dev -n $(projectName)
+    uselocalOc: true
+
+# Rollout the application if everything was already created
+- task: oc-cmd@2
+  displayName: Rollout to OCP
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'openshift'
+    cmd: rollout restart deployment dotnetcore-app -n $(projectName)
+    uselocalOc: true

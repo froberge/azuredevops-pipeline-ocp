@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dotnetcore-app
+  labels:
+    app: dotnetcore-app
+    app.kubernetes.io/component: dotnetcore-app
+    app.kubernetes.io/instance: dotnetcore-app
+    app.kubernetes.io/part-of: dotnetcore-app-app
+    app.openshift.io/runtime: 5.0-ubi8
+    app.openshift.io/runtime-version: 5.0-ubi8
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dotnetcore-app
+  template:
+    metadata:
+      labels:
+        app: dotnetcore-app
+    spec:
+      containers:
+        - name: dotnetcore-app
+          imagePullPolicy: Always
+          image: quay.io/froberge/dotnetcore-app:latest
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          - containerPort: 8778
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
