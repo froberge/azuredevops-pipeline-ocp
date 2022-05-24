@@ -3,14 +3,15 @@
 # Introduction 
 Simple MVC .NET Core application that was fork from [Red Hat Developer](https://github.com/redhat-developer/s2i-dotnetcore-ex). 
 
-This code is use to demmonstrate the creation a CI/CD Azure Devops pipeline with a deployment to OpenShift. 
-Refect to the project [README documentation](README.adoc) for more info on the actual .NET core project.
+This code is use to demonstrate the creation a CI/CD Azure Devops pipeline with a deployment to OpenShift. 
+Refect to the project [README documentation](app/README.adoc) for more info on the actual .NET core project.
 
 # Getting Started
 Here are the requirement to get this project started.
-1.	Make sure your your azure devops organization as parallelism grant.
-2.	Have access to [quay](quay.io).
-3.	Have an OpenShift installation working and ready.
+1.  [Have an Azure DevOps organization](https://dev.azure.com/)
+1.	Make sure your azure devops organization as parallelism grant
+2.	Have access to [quay](quay.io) or any another image registry service.
+3.	Have an OpenShift Cluster
 4.  Create and Openshift project and a Service Account.
 5.	Install the [Openshift extension](#Install-OpenShift-extension).
 
@@ -68,7 +69,7 @@ Guide to how to connect to an external container registry.
 
 # Build and Test
 
-## Option 1  -Run pipeline
+## Option 1  - Run pipeline
 The application can be build and test using the azure pipeline in the repository considering that the previous setup was made.
 
 ## Option 2 - Manual CI/CD mode
@@ -87,4 +88,4 @@ docker run -d -p 8080:8080 --name [container_name] [image_name]
 
 1. Tag the image
 2. Push to image to the container registry
-3. Deploy the image rom the registry to the desired platform
+3. Deploy the image from the registry to the desired platform
